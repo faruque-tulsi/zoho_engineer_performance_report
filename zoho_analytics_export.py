@@ -39,10 +39,9 @@ EXPORT_CONFIG = {
 # ==========================================================
 PHONE_NUMBER_ID = "904246956102955"
 WA_TOKEN = os.getenv("WA_TOKEN")
-TO_NUMBER = "919143128745"              # recipient phone in international format, no +
-CAPTION = "Hi,\nAapka performance report Attached hai is week ka.\n\nThanks,\nTulsi Weigh Solutions Pvt. Ltd."
-
-GRAPH_VERSION = "v19.0"  # you can bump this later if you want
+TO_NUMBER = "916292149254"              # recipient phone in international format, no +
+WA_TEMPLATE_NAME = "zoho_engineer_performance_report"
+GRAPH_VERSION = "v19.0"
 # ==========================================================
 
 
@@ -142,28 +141,42 @@ def wa_upload_media(file_path: Path) -> str:
         print("✅ WhatsApp media uploaded, media_id:", media_id)
         return media_id
 
-def wa_send_document(to_number: str, media_id: str, filename: str, caption: str = ""):
+def wa_send_template_with_document(to_number: str, media_id: str, filename: str):
     """
-    Send document message:
+    Send a template message with a document header:
       POST /{PHONE_NUMBER_ID}/messages
     """
     url = f"{graph_base()}/{PHONE_NUMBER_ID}/messages"
     payload = {
         "messaging_product": "whatsapp",
         "to": to_number,
-        "type": "document",
-        "document": {
-            "id": media_id,
-            "filename": filename
+        "type": "template",
+        "template": {
+            "name": WA_TEMPLATE_NAME,
+            "language": {
+                "code": "en"  # Adjust language code if needed
+            },
+            "components": [
+                {
+                    "type": "header",
+                    "parameters": [
+                        {
+                            "type": "document",
+                            "document": {
+                                "id": media_id,
+                                "filename": filename
+                            }
+                        }
+                    ]
+                }
+            ]
         }
     }
-    if caption:
-        payload["document"]["caption"] = caption
 
     r = requests.post(url, headers={**wa_headers(), "Content-Type": "application/json"},
                       data=json.dumps(payload), timeout=60)
     r.raise_for_status()
-    print("✅ WhatsApp document message sent.")
+    print("✅ WhatsApp template message sent.")
     return r.json()
 
 
@@ -177,12 +190,11 @@ def main():
     # 2) Upload PDF to WhatsApp
     media_id = wa_upload_media(EXPORT_FILE)
 
-    # 3) Send document message
-    wa_send_document(
+    # 3) Send template message with document header
+    wa_send_template_with_document(
         to_number=TO_NUMBER,
         media_id=media_id,
-        filename=EXPORT_FILE.name,
-        caption=CAPTION
+        filename=EXPORT_FILE.name
     )
 
 
