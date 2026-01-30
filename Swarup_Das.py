@@ -19,7 +19,7 @@ ZOHO_REFRESH_TOKEN = os.getenv("ZOHO_REFRESH_TOKEN")
 
 ZOHO_ORG_ID = "60016736787"  # confirmed from your /orgs output
 WORKSPACE_ID = "256541000000008002"
-VIEW_ID = "256541000006695347"
+VIEW_ID = "256541000007092909"
 
 EXPORT_FILE = Path("Zoho_Export.pdf")
 
@@ -39,7 +39,7 @@ EXPORT_CONFIG = {
 # ==========================================================
 PHONE_NUMBER_ID = "904246956102955"
 WA_TOKEN = os.getenv("WA_TOKEN")
-TO_NUMBER = "918961646242"              # recipient phone in international format, no +
+TO_NUMBER = "918336921908"              # recipient phone in international format, no +
 WA_TEMPLATE_NAME = "zoho_engineer_performance_report"
 GRAPH_VERSION = "v19.0"
 # ==========================================================
