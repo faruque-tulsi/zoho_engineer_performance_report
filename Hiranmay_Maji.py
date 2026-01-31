@@ -21,7 +21,7 @@ ZOHO_ORG_ID = "60016736787"  # confirmed from your /orgs output
 WORKSPACE_ID = "256541000000008002"
 VIEW_ID = "256541000007099457"
 
-EXPORT_FILE = Path("Zoho_Export.pdf")
+EXPORT_FILE = Path("Weekly_Performance_Report.pdf")
 
 EXPORT_CONFIG = {
     "responseFormat": "pdf",

@@ -19,9 +19,9 @@ ZOHO_REFRESH_TOKEN = os.getenv("ZOHO_REFRESH_TOKEN")
 
 ZOHO_ORG_ID = "60016736787"  # confirmed from your /orgs output
 WORKSPACE_ID = "256541000000008002"
-VIEW_ID = "256541000007018405"
+VIEW_ID = "256541000006729508"
 
-EXPORT_FILE = Path("Weekly_Performance_Report.pdf")
+EXPORT_FILE = Path("Your_Yesterday_Working_Hour_Report.pdf")
 
 EXPORT_CONFIG = {
     "responseFormat": "pdf",
@@ -39,8 +39,37 @@ EXPORT_CONFIG = {
 # ==========================================================
 PHONE_NUMBER_ID = "904246956102955"
 WA_TOKEN = os.getenv("WA_TOKEN")
-TO_NUMBER = "919002002729"              # recipient phone in international format, no +
-WA_TEMPLATE_NAME = "zoho_engineer_performance_report"
+# All recipient phone numbers in international format, no +
+TO_NUMBERS = [
+    "919143128729",
+    "919641772648",
+    "917890960868",
+    "916292149257",
+    "917047688836",
+    "919143128733",
+    "919002002729",
+    "917319317995",
+    "919143128740",
+    "918622019832",
+    "917439592820",
+    "919143128744",
+    "918011384965",
+    "919143128749",
+    "918250998848",
+    "917074309580",
+    "919064992375",
+    "916299408204",
+    "916289660389",
+    "918336921908",
+    "919749442741",
+    "916201458894",
+    "918647856302",
+    "919083184190",
+    "919051956018",
+    "919143128745",
+    "918961646242",
+]
+WA_TEMPLATE_NAME = "zoho_engineer_daily_performance"
 GRAPH_VERSION = "v19.0"
 # ==========================================================
 
@@ -187,15 +216,36 @@ def main():
     if not EXPORT_FILE.exists() or EXPORT_FILE.stat().st_size == 0:
         raise RuntimeError("Exported PDF file missing or empty.")
 
-    # 2) Upload PDF to WhatsApp
+    # 2) Upload PDF to WhatsApp (upload once, reuse media_id)
     media_id = wa_upload_media(EXPORT_FILE)
 
-    # 3) Send template message with document header
-    wa_send_template_with_document(
-        to_number=TO_NUMBER,
-        media_id=media_id,
-        filename=EXPORT_FILE.name
-    )
+    # 3) Send template message with document header to all recipients
+    total = len(TO_NUMBERS)
+    successful = 0
+    failed = 0
+    
+    for idx, to_number in enumerate(TO_NUMBERS, 1):
+        try:
+            print(f"\n[{idx}/{total}] Sending to {to_number}...")
+            wa_send_template_with_document(
+                to_number=to_number,
+                media_id=media_id,
+                filename=EXPORT_FILE.name
+            )
+            successful += 1
+            
+            # Add a small delay between sends to avoid rate limiting
+            if idx < total:
+                time.sleep(2)
+                
+        except Exception as e:
+            failed += 1
+            print(f"❌ Failed to send to {to_number}: {e}")
+            continue
+    
+    print(f"\n{'='*60}")
+    print(f"✅ Summary: {successful} sent successfully, {failed} failed out of {total} total")
+    print(f"{'='*60}")
 
 
 if __name__ == "__main__":
