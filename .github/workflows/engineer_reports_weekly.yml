@@ -10,6 +10,7 @@ jobs:
   # ========== BATCH 1 (5 engineers) ==========
   AnimeshKundu:
     runs-on: ubuntu-latest
+    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -25,6 +26,7 @@ jobs:
 
   Asim_Dey:
     runs-on: ubuntu-latest
+    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -40,6 +42,7 @@ jobs:
 
   Dipu_Mandal:
     runs-on: ubuntu-latest
+    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -55,6 +58,7 @@ jobs:
 
   Hiranmay_Maji:
     runs-on: ubuntu-latest
+    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -70,6 +74,7 @@ jobs:
 
   Indrajit_Das:
     runs-on: ubuntu-latest
+    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -83,10 +88,12 @@ jobs:
           ZOHO_REFRESH_TOKEN: ${{ secrets.ZOHO_REFRESH_TOKEN }}
           WA_TOKEN: ${{ secrets.WA_TOKEN }}
 
-  # ========== BATCH 2 (5 engineers) - Waits for Batch 1 ==========
+  # ========== BATCH 2 (5 engineers) - Runs even if Batch 1 has failures ==========
   Kousik_Paul:
     runs-on: ubuntu-latest
+    continue-on-error: true
     needs: [AnimeshKundu, Asim_Dey, Dipu_Mandal, Hiranmay_Maji, Indrajit_Das]
+    if: always()  # Run even if previous batch has failures
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -102,7 +109,9 @@ jobs:
 
   Naibendu_Dutta:
     runs-on: ubuntu-latest
+    continue-on-error: true
     needs: [AnimeshKundu, Asim_Dey, Dipu_Mandal, Hiranmay_Maji, Indrajit_Das]
+    if: always()
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -118,7 +127,9 @@ jobs:
 
   Nitai_Barman:
     runs-on: ubuntu-latest
+    continue-on-error: true
     needs: [AnimeshKundu, Asim_Dey, Dipu_Mandal, Hiranmay_Maji, Indrajit_Das]
+    if: always()
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -134,7 +145,9 @@ jobs:
 
   Prabir_Sardar:
     runs-on: ubuntu-latest
+    continue-on-error: true
     needs: [AnimeshKundu, Asim_Dey, Dipu_Mandal, Hiranmay_Maji, Indrajit_Das]
+    if: always()
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -150,7 +163,9 @@ jobs:
 
   SK_Habibul:
     runs-on: ubuntu-latest
+    continue-on-error: true
     needs: [AnimeshKundu, Asim_Dey, Dipu_Mandal, Hiranmay_Maji, Indrajit_Das]
+    if: always()
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -164,10 +179,12 @@ jobs:
           ZOHO_REFRESH_TOKEN: ${{ secrets.ZOHO_REFRESH_TOKEN }}
           WA_TOKEN: ${{ secrets.WA_TOKEN }}
 
-  # ========== BATCH 3 (5 engineers) - Waits for Batch 2 ==========
+  # ========== BATCH 3 (5 engineers) - Runs even if Batch 2 has failures ==========
   Saikat_Mukherjee:
     runs-on: ubuntu-latest
+    continue-on-error: true
     needs: [Kousik_Paul, Naibendu_Dutta, Nitai_Barman, Prabir_Sardar, SK_Habibul]
+    if: always()
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -183,7 +200,9 @@ jobs:
 
   Sajal_Poria:
     runs-on: ubuntu-latest
+    continue-on-error: true
     needs: [Kousik_Paul, Naibendu_Dutta, Nitai_Barman, Prabir_Sardar, SK_Habibul]
+    if: always()
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -199,7 +218,9 @@ jobs:
 
   Saptarshi_Ghosh:
     runs-on: ubuntu-latest
+    continue-on-error: true
     needs: [Kousik_Paul, Naibendu_Dutta, Nitai_Barman, Prabir_Sardar, SK_Habibul]
+    if: always()
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -215,7 +236,9 @@ jobs:
 
   Sayan_Adhikary:
     runs-on: ubuntu-latest
+    continue-on-error: true
     needs: [Kousik_Paul, Naibendu_Dutta, Nitai_Barman, Prabir_Sardar, SK_Habibul]
+    if: always()
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -231,7 +254,9 @@ jobs:
 
   Shasanka_Sardar:
     runs-on: ubuntu-latest
+    continue-on-error: true
     needs: [Kousik_Paul, Naibendu_Dutta, Nitai_Barman, Prabir_Sardar, SK_Habibul]
+    if: always()
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -245,10 +270,12 @@ jobs:
           ZOHO_REFRESH_TOKEN: ${{ secrets.ZOHO_REFRESH_TOKEN }}
           WA_TOKEN: ${{ secrets.WA_TOKEN }}
 
-  # ========== BATCH 4 (5 engineers) - Waits for Batch 3 ==========
+  # ========== BATCH 4 (5 engineers) - Runs even if Batch 3 has failures ==========
   Shibnath_Chatterjee:
     runs-on: ubuntu-latest
+    continue-on-error: true
     needs: [Saikat_Mukherjee, Sajal_Poria, Saptarshi_Ghosh, Sayan_Adhikary, Shasanka_Sardar]
+    if: always()
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -264,7 +291,9 @@ jobs:
 
   Somnath_Adak:
     runs-on: ubuntu-latest
+    continue-on-error: true
     needs: [Saikat_Mukherjee, Sajal_Poria, Saptarshi_Ghosh, Sayan_Adhikary, Shasanka_Sardar]
+    if: always()
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -280,7 +309,9 @@ jobs:
 
   Subash_Banik:
     runs-on: ubuntu-latest
+    continue-on-error: true
     needs: [Saikat_Mukherjee, Sajal_Poria, Saptarshi_Ghosh, Sayan_Adhikary, Shasanka_Sardar]
+    if: always()
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -296,7 +327,9 @@ jobs:
 
   Subhadep_Halder:
     runs-on: ubuntu-latest
+    continue-on-error: true
     needs: [Saikat_Mukherjee, Sajal_Poria, Saptarshi_Ghosh, Sayan_Adhikary, Shasanka_Sardar]
+    if: always()
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -312,7 +345,9 @@ jobs:
 
   Subhajit_Jana:
     runs-on: ubuntu-latest
+    continue-on-error: true
     needs: [Saikat_Mukherjee, Sajal_Poria, Saptarshi_Ghosh, Sayan_Adhikary, Shasanka_Sardar]
+    if: always()
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -326,10 +361,12 @@ jobs:
           ZOHO_REFRESH_TOKEN: ${{ secrets.ZOHO_REFRESH_TOKEN }}
           WA_TOKEN: ${{ secrets.WA_TOKEN }}
 
-  # ========== BATCH 5 (6 engineers + main) - Waits for Batch 4 ==========
+  # ========== BATCH 5 (6 engineers + main) - Runs even if Batch 4 has failures ==========
   Sujit_Kumar_Poodar:
     runs-on: ubuntu-latest
+    continue-on-error: true
     needs: [Shibnath_Chatterjee, Somnath_Adak, Subash_Banik, Subhadep_Halder, Subhajit_Jana]
+    if: always()
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -345,7 +382,9 @@ jobs:
 
   Suman_Roy:
     runs-on: ubuntu-latest
+    continue-on-error: true
     needs: [Shibnath_Chatterjee, Somnath_Adak, Subash_Banik, Subhadep_Halder, Subhajit_Jana]
+    if: always()
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -361,7 +400,9 @@ jobs:
 
   Swarup_Das:
     runs-on: ubuntu-latest
+    continue-on-error: true
     needs: [Shibnath_Chatterjee, Somnath_Adak, Subash_Banik, Subhadep_Halder, Subhajit_Jana]
+    if: always()
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -377,7 +418,9 @@ jobs:
 
   Tanmay_Mondal:
     runs-on: ubuntu-latest
+    continue-on-error: true
     needs: [Shibnath_Chatterjee, Somnath_Adak, Subash_Banik, Subhadep_Halder, Subhajit_Jana]
+    if: always()
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -393,7 +436,9 @@ jobs:
 
   Tapas_Majhi:
     runs-on: ubuntu-latest
+    continue-on-error: true
     needs: [Shibnath_Chatterjee, Somnath_Adak, Subash_Banik, Subhadep_Halder, Subhajit_Jana]
+    if: always()
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -409,7 +454,9 @@ jobs:
 
   Main_Report:
     runs-on: ubuntu-latest
+    continue-on-error: true
     needs: [Shibnath_Chatterjee, Somnath_Adak, Subash_Banik, Subhadep_Halder, Subhajit_Jana]
+    if: always()
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
