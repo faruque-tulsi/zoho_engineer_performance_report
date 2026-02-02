@@ -207,7 +207,7 @@ def wa_send_template_with_document(to_number: str, media_id: str, filename: str)
 
 def main():
     # Add initial random delay to avoid all scripts hitting API simultaneously
-    initial_delay = random.uniform(0, 5)
+    initial_delay = random.uniform(0, 20)
     print(f"Starting in {initial_delay:.2f}s to avoid rate limiting...")
     time.sleep(initial_delay)
     
