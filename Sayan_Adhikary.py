@@ -2,6 +2,7 @@ import json
 import time
 import requests
 import os
+import random
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -53,6 +54,7 @@ def zoho_analytics_base():
     return f"https://analyticsapi.zoho.{ZOHO_DC}"
 
 def zoho_get_access_token():
+    """Get Zoho access token with retry logic for rate limiting."""
     url = f"{zoho_accounts_base()}/oauth/v2/token"
     data = {
         "grant_type": "refresh_token",
@@ -60,9 +62,32 @@ def zoho_get_access_token():
         "client_secret": ZOHO_CLIENT_SECRET,
         "refresh_token": ZOHO_REFRESH_TOKEN,
     }
-    r = requests.post(url, data=data, timeout=60)
-    r.raise_for_status()
-    return r.json()["access_token"]
+    
+    max_retries = 5
+    for attempt in range(max_retries):
+        try:
+            # Add random jitter to avoid thundering herd
+            if attempt > 0:
+                jitter = random.uniform(0.5, 2.0)
+                wait_time = (2 ** attempt) + jitter
+                print(f"Retry {attempt}/{max_retries}, waiting {wait_time:.2f}s...")
+                time.sleep(wait_time)
+            
+            r = requests.post(url, data=data, timeout=60)
+            r.raise_for_status()
+            return r.json()["access_token"]
+        except requests.exceptions.HTTPError as e:
+            if e.response.status_code == 400 and attempt < max_retries - 1:
+                print(f"Rate limited (400), retrying...")
+                continue
+            raise
+        except requests.exceptions.RequestException as e:
+            if attempt < max_retries - 1:
+                print(f"Request failed: {e}, retrying...")
+                continue
+            raise
+    
+    raise RuntimeError("Failed to get access token after multiple retries")
 
 def zoho_headers(access_token: str):
     return {
@@ -181,6 +206,11 @@ def wa_send_template_with_document(to_number: str, media_id: str, filename: str)
 
 
 def main():
+    # Add initial random delay to avoid all scripts hitting API simultaneously
+    initial_delay = random.uniform(0, 5)
+    print(f"Starting in {initial_delay:.2f}s to avoid rate limiting...")
+    time.sleep(initial_delay)
+    
     # 1) Export PDF from Zoho (bulk async)
     zoho_bulk_export_pdf()
 

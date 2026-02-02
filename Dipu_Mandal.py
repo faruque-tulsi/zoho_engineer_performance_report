@@ -2,6 +2,7 @@ import json
 import time
 import requests
 import os
+import random
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -17,7 +18,7 @@ ZOHO_CLIENT_ID = os.getenv("ZOHO_CLIENT_ID")
 ZOHO_CLIENT_SECRET = os.getenv("ZOHO_CLIENT_SECRET")
 ZOHO_REFRESH_TOKEN = os.getenv("ZOHO_REFRESH_TOKEN")
 
-ZOHO_ORG_ID = "60016736787"  # confirmed from your /orgs output
+ZOHO_ORG_ID = "60016736787"
 WORKSPACE_ID = "256541000000008002"
 VIEW_ID = "256541000007097455"
 
@@ -25,7 +26,7 @@ EXPORT_FILE = Path("Weekly_Performance_Report.pdf")
 
 EXPORT_CONFIG = {
     "responseFormat": "pdf",
-    "paperSize": 4,             # A4
+    "paperSize": 4,
     "paperStyle": "Portrait",
     "showTitle": 0,
     "showDesc": 2,
@@ -39,7 +40,7 @@ EXPORT_CONFIG = {
 # ==========================================================
 PHONE_NUMBER_ID = "904246956102955"
 WA_TOKEN = os.getenv("WA_TOKEN")
-TO_NUMBER = "919051956018"              # recipient phone in international format, no +
+TO_NUMBER = "919051956018"
 WA_TEMPLATE_NAME = "zoho_engineer_performance_report"
 GRAPH_VERSION = "v19.0"
 # ==========================================================
@@ -53,6 +54,7 @@ def zoho_analytics_base():
     return f"https://analyticsapi.zoho.{ZOHO_DC}"
 
 def zoho_get_access_token():
+    """Get Zoho access token with retry logic for rate limiting."""
     url = f"{zoho_accounts_base()}/oauth/v2/token"
     data = {
         "grant_type": "refresh_token",
@@ -60,9 +62,32 @@ def zoho_get_access_token():
         "client_secret": ZOHO_CLIENT_SECRET,
         "refresh_token": ZOHO_REFRESH_TOKEN,
     }
-    r = requests.post(url, data=data, timeout=60)
-    r.raise_for_status()
-    return r.json()["access_token"]
+    
+    max_retries = 5
+    for attempt in range(max_retries):
+        try:
+            # Add random jitter to avoid thundering herd
+            if attempt > 0:
+                jitter = random.uniform(0.5, 2.0)
+                wait_time = (2 ** attempt) + jitter
+                print(f"Retry {attempt}/{max_retries}, waiting {wait_time:.2f}s...")
+                time.sleep(wait_time)
+            
+            r = requests.post(url, data=data, timeout=60)
+            r.raise_for_status()
+            return r.json()["access_token"]
+        except requests.exceptions.HTTPError as e:
+            if e.response.status_code == 400 and attempt < max_retries - 1:
+                print(f"Rate limited (400), retrying...")
+                continue
+            raise
+        except requests.exceptions.RequestException as e:
+            if attempt < max_retries - 1:
+                print(f"Request failed: {e}, retrying...")
+                continue
+            raise
+    
+    raise RuntimeError("Failed to get access token after multiple retries")
 
 def zoho_headers(access_token: str):
     return {
@@ -154,7 +179,7 @@ def wa_send_template_with_document(to_number: str, media_id: str, filename: str)
         "template": {
             "name": WA_TEMPLATE_NAME,
             "language": {
-                "code": "en"  # Adjust language code if needed
+                "code": "en"
             },
             "components": [
                 {
@@ -181,6 +206,11 @@ def wa_send_template_with_document(to_number: str, media_id: str, filename: str)
 
 
 def main():
+    # Add initial random delay to avoid all scripts hitting API simultaneously
+    initial_delay = random.uniform(0, 5)
+    print(f"Starting in {initial_delay:.2f}s to avoid rate limiting...")
+    time.sleep(initial_delay)
+    
     # 1) Export PDF from Zoho (bulk async)
     zoho_bulk_export_pdf()
 
