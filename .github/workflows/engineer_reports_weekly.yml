@@ -94,8 +94,8 @@ jobs:
     needs: [AnimeshKundu, Asim_Dey, Dipu_Mandal, Hiranmay_Maji, Indrajit_Das]
     if: always()
     steps:
-      - run: sleep 60
-      - run: echo "Rate limit cooldown complete, proceeding to Batch 2"
+      - run: sleep 90
+      - run: echo "90s cooldown complete, proceeding to Batch 2"
 
   # ========== BATCH 2 (5 engineers) ==========
   Kousik_Paul:
@@ -194,8 +194,8 @@ jobs:
     needs: [Kousik_Paul, Naibendu_Dutta, Nitai_Barman, Prabir_Sardar, SK_Habibul]
     if: always()
     steps:
-      - run: sleep 60
-      - run: echo "Rate limit cooldown complete, proceeding to Batch 3"
+      - run: sleep 90
+      - run: echo "90s cooldown complete, proceeding to Batch 3"
 
   # ========== BATCH 3 (5 engineers) ==========
   Saikat_Mukherjee:
@@ -294,8 +294,8 @@ jobs:
     needs: [Saikat_Mukherjee, Sajal_Poria, Saptarshi_Ghosh, Sayan_Adhikary, Shasanka_Sardar]
     if: always()
     steps:
-      - run: sleep 60
-      - run: echo "Rate limit cooldown complete, proceeding to Batch 4"
+      - run: sleep 90
+      - run: echo "90s cooldown complete, proceeding to Batch 4"
 
   # ========== BATCH 4 (5 engineers) ==========
   Shibnath_Chatterjee:
@@ -394,8 +394,8 @@ jobs:
     needs: [Shibnath_Chatterjee, Somnath_Adak, Subash_Banik, Subhadep_Halder, Subhajit_Jana]
     if: always()
     steps:
-      - run: sleep 60
-      - run: echo "Rate limit cooldown complete, proceeding to Batch 5"
+      - run: sleep 90
+      - run: echo "90s cooldown complete, proceeding to Batch 5"
 
   # ========== BATCH 5 (6 engineers + main) ==========
   Sujit_Kumar_Poodar:
