@@ -88,12 +88,21 @@ jobs:
           ZOHO_REFRESH_TOKEN: ${{ secrets.ZOHO_REFRESH_TOKEN }}
           WA_TOKEN: ${{ secrets.WA_TOKEN }}
 
-  # ========== BATCH 2 (5 engineers) - Runs even if Batch 1 has failures ==========
+  # ========== DELAY: Wait 60s for rate limit reset ==========
+  delay_batch_1:
+    runs-on: ubuntu-latest
+    needs: [AnimeshKundu, Asim_Dey, Dipu_Mandal, Hiranmay_Maji, Indrajit_Das]
+    if: always()
+    steps:
+      - run: sleep 60
+      - run: echo "Rate limit cooldown complete, proceeding to Batch 2"
+
+  # ========== BATCH 2 (5 engineers) ==========
   Kousik_Paul:
     runs-on: ubuntu-latest
     continue-on-error: true
-    needs: [AnimeshKundu, Asim_Dey, Dipu_Mandal, Hiranmay_Maji, Indrajit_Das]
-    if: always()  # Run even if previous batch has failures
+    needs: [delay_batch_1]
+    if: always()
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -110,7 +119,7 @@ jobs:
   Naibendu_Dutta:
     runs-on: ubuntu-latest
     continue-on-error: true
-    needs: [AnimeshKundu, Asim_Dey, Dipu_Mandal, Hiranmay_Maji, Indrajit_Das]
+    needs: [delay_batch_1]
     if: always()
     steps:
       - uses: actions/checkout@v4
@@ -128,7 +137,7 @@ jobs:
   Nitai_Barman:
     runs-on: ubuntu-latest
     continue-on-error: true
-    needs: [AnimeshKundu, Asim_Dey, Dipu_Mandal, Hiranmay_Maji, Indrajit_Das]
+    needs: [delay_batch_1]
     if: always()
     steps:
       - uses: actions/checkout@v4
@@ -146,7 +155,7 @@ jobs:
   Prabir_Sardar:
     runs-on: ubuntu-latest
     continue-on-error: true
-    needs: [AnimeshKundu, Asim_Dey, Dipu_Mandal, Hiranmay_Maji, Indrajit_Das]
+    needs: [delay_batch_1]
     if: always()
     steps:
       - uses: actions/checkout@v4
@@ -164,7 +173,7 @@ jobs:
   SK_Habibul:
     runs-on: ubuntu-latest
     continue-on-error: true
-    needs: [AnimeshKundu, Asim_Dey, Dipu_Mandal, Hiranmay_Maji, Indrajit_Das]
+    needs: [delay_batch_1]
     if: always()
     steps:
       - uses: actions/checkout@v4
@@ -179,11 +188,20 @@ jobs:
           ZOHO_REFRESH_TOKEN: ${{ secrets.ZOHO_REFRESH_TOKEN }}
           WA_TOKEN: ${{ secrets.WA_TOKEN }}
 
-  # ========== BATCH 3 (5 engineers) - Runs even if Batch 2 has failures ==========
+  # ========== DELAY: Wait 60s for rate limit reset ==========
+  delay_batch_2:
+    runs-on: ubuntu-latest
+    needs: [Kousik_Paul, Naibendu_Dutta, Nitai_Barman, Prabir_Sardar, SK_Habibul]
+    if: always()
+    steps:
+      - run: sleep 60
+      - run: echo "Rate limit cooldown complete, proceeding to Batch 3"
+
+  # ========== BATCH 3 (5 engineers) ==========
   Saikat_Mukherjee:
     runs-on: ubuntu-latest
     continue-on-error: true
-    needs: [Kousik_Paul, Naibendu_Dutta, Nitai_Barman, Prabir_Sardar, SK_Habibul]
+    needs: [delay_batch_2]
     if: always()
     steps:
       - uses: actions/checkout@v4
@@ -201,7 +219,7 @@ jobs:
   Sajal_Poria:
     runs-on: ubuntu-latest
     continue-on-error: true
-    needs: [Kousik_Paul, Naibendu_Dutta, Nitai_Barman, Prabir_Sardar, SK_Habibul]
+    needs: [delay_batch_2]
     if: always()
     steps:
       - uses: actions/checkout@v4
@@ -219,7 +237,7 @@ jobs:
   Saptarshi_Ghosh:
     runs-on: ubuntu-latest
     continue-on-error: true
-    needs: [Kousik_Paul, Naibendu_Dutta, Nitai_Barman, Prabir_Sardar, SK_Habibul]
+    needs: [delay_batch_2]
     if: always()
     steps:
       - uses: actions/checkout@v4
@@ -237,7 +255,7 @@ jobs:
   Sayan_Adhikary:
     runs-on: ubuntu-latest
     continue-on-error: true
-    needs: [Kousik_Paul, Naibendu_Dutta, Nitai_Barman, Prabir_Sardar, SK_Habibul]
+    needs: [delay_batch_2]
     if: always()
     steps:
       - uses: actions/checkout@v4
@@ -255,7 +273,7 @@ jobs:
   Shasanka_Sardar:
     runs-on: ubuntu-latest
     continue-on-error: true
-    needs: [Kousik_Paul, Naibendu_Dutta, Nitai_Barman, Prabir_Sardar, SK_Habibul]
+    needs: [delay_batch_2]
     if: always()
     steps:
       - uses: actions/checkout@v4
@@ -270,11 +288,20 @@ jobs:
           ZOHO_REFRESH_TOKEN: ${{ secrets.ZOHO_REFRESH_TOKEN }}
           WA_TOKEN: ${{ secrets.WA_TOKEN }}
 
-  # ========== BATCH 4 (5 engineers) - Runs even if Batch 3 has failures ==========
+  # ========== DELAY: Wait 60s for rate limit reset ==========
+  delay_batch_3:
+    runs-on: ubuntu-latest
+    needs: [Saikat_Mukherjee, Sajal_Poria, Saptarshi_Ghosh, Sayan_Adhikary, Shasanka_Sardar]
+    if: always()
+    steps:
+      - run: sleep 60
+      - run: echo "Rate limit cooldown complete, proceeding to Batch 4"
+
+  # ========== BATCH 4 (5 engineers) ==========
   Shibnath_Chatterjee:
     runs-on: ubuntu-latest
     continue-on-error: true
-    needs: [Saikat_Mukherjee, Sajal_Poria, Saptarshi_Ghosh, Sayan_Adhikary, Shasanka_Sardar]
+    needs: [delay_batch_3]
     if: always()
     steps:
       - uses: actions/checkout@v4
@@ -292,7 +319,7 @@ jobs:
   Somnath_Adak:
     runs-on: ubuntu-latest
     continue-on-error: true
-    needs: [Saikat_Mukherjee, Sajal_Poria, Saptarshi_Ghosh, Sayan_Adhikary, Shasanka_Sardar]
+    needs: [delay_batch_3]
     if: always()
     steps:
       - uses: actions/checkout@v4
@@ -310,7 +337,7 @@ jobs:
   Subash_Banik:
     runs-on: ubuntu-latest
     continue-on-error: true
-    needs: [Saikat_Mukherjee, Sajal_Poria, Saptarshi_Ghosh, Sayan_Adhikary, Shasanka_Sardar]
+    needs: [delay_batch_3]
     if: always()
     steps:
       - uses: actions/checkout@v4
@@ -328,7 +355,7 @@ jobs:
   Subhadep_Halder:
     runs-on: ubuntu-latest
     continue-on-error: true
-    needs: [Saikat_Mukherjee, Sajal_Poria, Saptarshi_Ghosh, Sayan_Adhikary, Shasanka_Sardar]
+    needs: [delay_batch_3]
     if: always()
     steps:
       - uses: actions/checkout@v4
@@ -346,7 +373,7 @@ jobs:
   Subhajit_Jana:
     runs-on: ubuntu-latest
     continue-on-error: true
-    needs: [Saikat_Mukherjee, Sajal_Poria, Saptarshi_Ghosh, Sayan_Adhikary, Shasanka_Sardar]
+    needs: [delay_batch_3]
     if: always()
     steps:
       - uses: actions/checkout@v4
@@ -361,11 +388,20 @@ jobs:
           ZOHO_REFRESH_TOKEN: ${{ secrets.ZOHO_REFRESH_TOKEN }}
           WA_TOKEN: ${{ secrets.WA_TOKEN }}
 
-  # ========== BATCH 5 (6 engineers + main) - Runs even if Batch 4 has failures ==========
+  # ========== DELAY: Wait 60s for rate limit reset ==========
+  delay_batch_4:
+    runs-on: ubuntu-latest
+    needs: [Shibnath_Chatterjee, Somnath_Adak, Subash_Banik, Subhadep_Halder, Subhajit_Jana]
+    if: always()
+    steps:
+      - run: sleep 60
+      - run: echo "Rate limit cooldown complete, proceeding to Batch 5"
+
+  # ========== BATCH 5 (6 engineers + main) ==========
   Sujit_Kumar_Poodar:
     runs-on: ubuntu-latest
     continue-on-error: true
-    needs: [Shibnath_Chatterjee, Somnath_Adak, Subash_Banik, Subhadep_Halder, Subhajit_Jana]
+    needs: [delay_batch_4]
     if: always()
     steps:
       - uses: actions/checkout@v4
@@ -383,7 +419,7 @@ jobs:
   Suman_Roy:
     runs-on: ubuntu-latest
     continue-on-error: true
-    needs: [Shibnath_Chatterjee, Somnath_Adak, Subash_Banik, Subhadep_Halder, Subhajit_Jana]
+    needs: [delay_batch_4]
     if: always()
     steps:
       - uses: actions/checkout@v4
@@ -401,7 +437,7 @@ jobs:
   Swarup_Das:
     runs-on: ubuntu-latest
     continue-on-error: true
-    needs: [Shibnath_Chatterjee, Somnath_Adak, Subash_Banik, Subhadep_Halder, Subhajit_Jana]
+    needs: [delay_batch_4]
     if: always()
     steps:
       - uses: actions/checkout@v4
@@ -419,7 +455,7 @@ jobs:
   Tanmay_Mondal:
     runs-on: ubuntu-latest
     continue-on-error: true
-    needs: [Shibnath_Chatterjee, Somnath_Adak, Subash_Banik, Subhadep_Halder, Subhajit_Jana]
+    needs: [delay_batch_4]
     if: always()
     steps:
       - uses: actions/checkout@v4
@@ -437,7 +473,7 @@ jobs:
   Tapas_Majhi:
     runs-on: ubuntu-latest
     continue-on-error: true
-    needs: [Shibnath_Chatterjee, Somnath_Adak, Subash_Banik, Subhadep_Halder, Subhajit_Jana]
+    needs: [delay_batch_4]
     if: always()
     steps:
       - uses: actions/checkout@v4
@@ -455,7 +491,7 @@ jobs:
   Main_Report:
     runs-on: ubuntu-latest
     continue-on-error: true
-    needs: [Shibnath_Chatterjee, Somnath_Adak, Subash_Banik, Subhadep_Halder, Subhajit_Jana]
+    needs: [delay_batch_4]
     if: always()
     steps:
       - uses: actions/checkout@v4
