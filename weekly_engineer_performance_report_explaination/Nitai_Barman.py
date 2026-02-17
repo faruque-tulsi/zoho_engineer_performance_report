@@ -406,7 +406,6 @@ def generate_report_pdf(data: dict, output_path: str) -> str:
     w1_max     = data.get("week1_max", 70)
     strengths  = data.get("strengths", [])
     weaknesses = data.get("weaknesses", [])
-    actions    = data.get("immediate_actions", [])
 
     # Determine status emoji / colour
     if pct >= 80:
@@ -432,37 +431,37 @@ def generate_report_pdf(data: dict, output_path: str) -> str:
     S   = getSampleStyleSheet()
 
     # ── Page 1: Executive summary ───────────────
-    els.append(Paragraph(name.upper(),
-        _style("title", fontSize=32, textColor=C_BLUE, fontName="Helvetica-Bold", spaceAfter=4)))
-    els.append(Paragraph(f"Performance Analysis Report | Week 2 ({week})",
-        _style("sub", fontSize=13, textColor=colors.HexColor("#666666"), spaceAfter=20)))
+    # Title block — name on its own line, subtitle clearly below
+    els.append(Paragraph(
+        name.upper(),
+        _style("title", fontSize=20, textColor=C_BLUE, fontName="Helvetica-Bold",
+               leading=24, spaceAfter=4, spaceBefore=0)
+    ))
+    els.append(Paragraph(
+        f"Performance Analysis Report | Week 2 ({week})",
+        _style("sub", fontSize=10, textColor=colors.HexColor("#666666"),
+               leading=14, spaceAfter=12)
+    ))
 
-    # Score banner
-    score_para = Paragraph(
-        f'<font size="38" color="white"><b>{score_label}</b></font>',
-        _style("sc", alignment=TA_CENTER)
-    )
-    pct_para = Paragraph(
-        f'<font size="20" color="white"><b>{pct:.1f}%</b></font>',
-        _style("pc", alignment=TA_CENTER)
-    )
-    status_para = Paragraph(
+    # Score banner — single cell with line breaks to avoid overlap
+    banner_content = Paragraph(
+        f'<font size="13" color="white"><b>EXECUTIVE SUMMARY</b></font><br/>'
+        f'<br/>'
+        f'<font size="34" color="white"><b>{score_label}</b></font><br/>'
+        f'<font size="16" color="white"><b>{pct:.1f}%</b></font><br/>'
+        f'<br/>'
         f'<font size="11" color="white">{status_text}</font>',
-        _style("st", alignment=TA_CENTER)
+        _style("banner_txt", alignment=TA_CENTER, leading=20)
     )
     els.append(_tbl(
-        [["EXECUTIVE SUMMARY"], [score_para], [pct_para], [status_para]],
+        [[banner_content]],
         [6.8*inch],
         [
-            ("BACKGROUND", (0,0),(-1,-1), banner_color),
-            ("ALIGN",      (0,0),(-1,-1), "CENTER"),
-            ("TOPPADDING",    (0,0),(0,0), 12),
-            ("BOTTOMPADDING", (0,3),(0,3), 12),
-            ("TOPPADDING",    (0,1),(0,3),  4),
-            ("BOTTOMPADDING", (0,0),(0,2),  2),
-            ("FONTNAME",      (0,0),(0,0), "Helvetica-Bold"),
-            ("FONTSIZE",      (0,0),(0,0), 14),
-            ("TEXTCOLOR",     (0,0),(0,0), C_WHITE),
+            ("BACKGROUND",    (0,0),(-1,-1), banner_color),
+            ("ALIGN",         (0,0),(-1,-1), "CENTER"),
+            ("VALIGN",        (0,0),(-1,-1), "MIDDLE"),
+            ("TOPPADDING",    (0,0),(-1,-1), 14),
+            ("BOTTOMPADDING", (0,0),(-1,-1), 14),
         ]
     ))
     els.append(Spacer(1, 0.2*inch))
@@ -754,68 +753,6 @@ def generate_report_pdf(data: dict, output_path: str) -> str:
                 ("TOPPADDING",  (0,0),(-1,-1), 7),
                 ("BOTTOMPADDING",(0,0),(-1,-1),7),
             ]))
-
-    # ── Page 4: Recommendations ──────────────────
-    els.append(PageBreak())
-    els.append(Paragraph("RECOMMENDATIONS & ACTION PLAN",
-        _style("rap", fontSize=18, textColor=C_DARK, fontName="Helvetica-Bold", spaceAfter=12)))
-
-    # Priority actions
-    priority_colors = [
-        (C_RED,    colors.HexColor("#FFE5E5"), "PRIORITY 1 — IMMEDIATE"),
-        (C_ORANGE, colors.HexColor("#FFF7E6"), "PRIORITY 2 — URGENT"),
-        (C_GREEN,  colors.HexColor("#E8F5E9"), "PRIORITY 3 — ONGOING"),
-    ]
-
-    for idx, action in enumerate(actions[:3]):
-        clr, bg, label = priority_colors[idx]
-        action_txt = f"<b>{label}:</b><br/>{action}"
-        els.append(_info_box(action_txt, bg, clr))
-        els.append(Spacer(1, 0.12*inch))
-
-    els.append(Spacer(1, 0.1*inch))
-
-    # Potential scenarios
-    els.append(Paragraph("PERFORMANCE POTENTIAL ANALYSIS",
-        _style("ppa", fontSize=16, textColor=C_DARK, fontName="Helvetica-Bold", spaceAfter=10, spaceBefore=14)))
-
-    secured = wh.get("score", 0) + rc.get("score", 0)  # what's already locked in
-    potential_txt = (
-        f"<b>Current Secured Points:</b> {secured}/50 "
-        f"(attendance + zero repeats = solid foundation)<br/><br/>"
-        f"<b>Scenario A — Minimum Acceptable (78%+):</b><br/>"
-        f"  Improve form quality to 8/20 (+{8-fq.get('score',0)} pts) = "
-        f"{secured + 8}/{max_pts} = {(secured+8)/max_pts*100:.0f}%<br/><br/>"
-        f"<b>Scenario B — Good Performance (85%+):</b><br/>"
-        f"  Form quality 12/20 + collect average feedback (21/30) = "
-        f"{secured+12+21}/100 = {(secured+12+21)/100*100:.0f}%<br/><br/>"
-        f"<b>Scenario C — Excellent (90%+):</b><br/>"
-        f"  Form quality 15/20 + excellent feedback (27/30) + perfect attendance (20/20) = "
-        f"{15+27+30+20}/100 = {(15+27+30+20)/100*100:.0f}%<br/><br/>"
-        f"<b>Key Insight:</b> The gap between {pct:.0f}% and 90% is entirely documentation "
-        f"and feedback collection — both trainable skills achievable within 3-4 weeks."
-    )
-    els.append(_info_box(potential_txt, colors.HexColor("#F0F8FF"), C_BLUE))
-    els.append(Spacer(1, 0.2*inch))
-
-    # Final recommendation banner
-    overall_txt = (
-        f"FINAL RECOMMENDATION: {name} scored {score_label} ({pct:.1f}%). "
-        f"Technical work is effective (zero repeat calls). "
-        f"Focus area: documentation quality must improve from {fq.get('score',0)}/20 to 8+/20 "
-        f"within 2 weeks to reach acceptable performance threshold (78%+)."
-    )
-    p_final = Paragraph(
-        f'<font size="11" color="white">{overall_txt}</font>',
-        _style("fr", alignment=TA_JUSTIFY)
-    )
-    els.append(_tbl([[p_final]], [6.8*inch], [
-        ("BACKGROUND",    (0,0),(-1,-1), C_BLUE),
-        ("LEFTPADDING",   (0,0),(-1,-1), 14),
-        ("RIGHTPADDING",  (0,0),(-1,-1), 14),
-        ("TOPPADDING",    (0,0),(-1,-1), 14),
-        ("BOTTOMPADDING", (0,0),(-1,-1), 14),
-    ]))
 
     doc.build(els)
     print(f"[Report] PDF saved: {output_path}")
