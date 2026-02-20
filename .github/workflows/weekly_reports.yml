@@ -1,4 +1,4 @@
-name: Weekly Engineer Performance Reports
+name: Weekly Engineer Performance Reports Analysis
 
 on:
   schedule:
