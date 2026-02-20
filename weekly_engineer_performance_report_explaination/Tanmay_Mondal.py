@@ -72,9 +72,9 @@ OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 # ─────────────────────────────────────────────
 ZOHO_ORG_ID        = "60016736787"
 WORKSPACE_ID       = "256541000000008002"
-VIEW_ID            = "256541000007099890"     # Zoho Analytics View/Dashboard ID
+VIEW_ID            = "256541000007102192"     # Zoho Analytics View/Dashboard ID
 
-TO_NUMBER          = "917047688836"           # Recipient number, E.164 without '+'
+TO_NUMBER          = "919749442741"           # Recipient number, E.164 without '+'
 WA_TEMPLATE_NAME   = "zoho_engineer_performance_report"  # Pre-approved template name
 WA_LANG            = "en"                     # Template language code
 

@@ -1,0 +1,72 @@
+name: Weekly Engineer Performance Reports
+
+on:
+  schedule:
+    # Runs at 04:30 UTC every Saturday (which is 10:00 AM IST)
+    - cron: '30 4 * * 6'
+  workflow_dispatch: # Allows manual trigger from GitHub UI
+
+jobs:
+  run-batch-1:
+    name: Run Batch 1 (Eng 1-13)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          cd weekly_engineer_performance_report_explaination
+          pip install -r requirements.txt
+
+      - name: Execute Batch 1
+        env:
+          # Pull from GitHub repository secrets
+          ZOHO_CLIENT_ID: ${{ secrets.ZOHO_CLIENT_ID }}
+          ZOHO_CLIENT_SECRET: ${{ secrets.ZOHO_CLIENT_SECRET }}
+          ZOHO_REFRESH_TOKEN: ${{ secrets.ZOHO_REFRESH_TOKEN }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          WHATSAPP_PHONE_ID: ${{ secrets.WHATSAPP_PHONE_ID }}
+          WA_TOKEN: ${{ secrets.WA_TOKEN }}
+        run: |
+          cd weekly_engineer_performance_report_explaination
+          # Run first 13 scripts (index 0 to 13 non-inclusive)
+          python run_reports.py 0 13
+
+  run-batch-2:
+    name: Run Batch 2 (Eng 14+)
+    needs: run-batch-1
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          cd weekly_engineer_performance_report_explaination
+          pip install -r requirements.txt
+
+      - name: Execute Batch 2
+        env:
+          ZOHO_CLIENT_ID: ${{ secrets.ZOHO_CLIENT_ID }}
+          ZOHO_CLIENT_SECRET: ${{ secrets.ZOHO_CLIENT_SECRET }}
+          ZOHO_REFRESH_TOKEN: ${{ secrets.ZOHO_REFRESH_TOKEN }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          WHATSAPP_PHONE_ID: ${{ secrets.WHATSAPP_PHONE_ID }}
+          WA_TOKEN: ${{ secrets.WA_TOKEN }}
+        run: |
+          cd weekly_engineer_performance_report_explaination
+          # Run remaining scripts (index 13 to end)
+          python run_reports.py 13 100
