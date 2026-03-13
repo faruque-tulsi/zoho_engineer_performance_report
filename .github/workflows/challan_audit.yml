@@ -1,0 +1,49 @@
+name: Weekly Challan Audit
+
+on:
+  schedule:
+    # Runs at 04:30 UTC every Saturday (which is exactly 10:00 AM IST)
+    - cron: '30 4 * * 6'
+  workflow_dispatch: # Allows you to trigger it manually from the GitHub UI
+
+jobs:
+  run-audit:
+    name: Run Challan Audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          cd challan_audit
+          pip install -r requirements.txt
+
+      - name: Execute Challan Audit
+        env:
+          # Pull authentication from your existing GitHub repository secrets
+          ZOHO_CLIENT_ID: ${{ secrets.ZOHO_CLIENT_ID }}
+          ZOHO_CLIENT_SECRET: ${{ secrets.ZOHO_CLIENT_SECRET }}
+          ZOHO_REFRESH_TOKEN: ${{ secrets.ZOHO_REFRESH_TOKEN }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          
+          # Standard Entity IDs for Zoho Desk (not sensitive secrets)
+          ZOHO_ORG_ID: "60016737139"
+          ZOHO_DEPARTMENT_ID: "86457000002722029"
+          ANKITA_AGENT_ID: "86457000003175001"
+        run: |
+          cd challan_audit
+          python challan_audit.py
+          
+      - name: Archive Audit Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: challan-audit-report
+          path: challan_audit/audit_report_*.json
+          retention-days: 14
