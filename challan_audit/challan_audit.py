@@ -65,7 +65,7 @@ log = logging.getLogger("challan_audit")
 # ─────────────────────────────────────────────────────────────
 def get_zoho_access_token() -> str:
     log.info("Obtaining Zoho access token …")
-    resp = requests.post(ZOHO_TOKEN_URL, params={
+    resp = requests.post(ZOHO_TOKEN_URL, data={
         "grant_type":    "refresh_token",
         "client_id":     ZOHO_CLIENT_ID,
         "client_secret": ZOHO_CLIENT_SECRET,
